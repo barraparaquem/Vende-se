@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
-    <!-- Scripts do Firebase -->
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -298,13 +297,11 @@
 </head>
 <body class="antialiased">
 
-    <!-- INÍCIO DO MENU DE NAVEGAÇÃO -->
     <nav class="sticky top-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md text-white shadow-lg">
         <div class="container mx-auto px-6">
             <div class="flex items-center justify-between h-16">
                 <a href="#" class="text-xl font-bold hover:text-[var(--cor-principal)] transition-colors">Barra em Transformação</a>
                 
-                <!-- Links para Desktop -->
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="#realidade" class="hover:text-[var(--cor-principal)] transition-colors">Realidade</a>
                     <a href="#historia" class="hover:text-[var(--cor-principal)] transition-colors">História</a>
@@ -313,7 +310,6 @@
                     <a href="#" id="open-pdf-btn" class="font-bold bg-[var(--cor-destaque)] px-4 py-2 rounded-md hover:bg-sky-800 transition-colors">Caderno Técnico</a>
                 </div>
 
-                <!-- Botão para Menu Mobile -->
                 <div class="md:hidden flex items-center">
                     <button id="mobile-menu-btn" class="text-white focus:outline-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -323,7 +319,6 @@
                 </div>
             </div>
         </div>
-        <!-- Painel do Menu Mobile -->
         <div id="mobile-menu" class="hidden md:hidden">
             <a href="#realidade" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Realidade</a>
             <a href="#historia" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">História</a>
@@ -332,8 +327,6 @@
             <a href="#" id="open-pdf-btn-mobile" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Caderno Técnico</a>
         </div>
     </nav>
-    <!-- FIM DO MENU DE NAVEGAÇÃO -->
-
     <header class="hero-image-container text-white">
         <img id="hero-bg-1" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_01_DSC06328.png" class="hero-image" alt="Casarão antigo na Barra">
         <img id="hero-bg-2" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG" class="hero-image opacity-0" alt="Prédio moderno e espelhado">
@@ -343,6 +336,7 @@
                 <h1 class="text-4xl md:text-7xl font-black uppercase tracking-wider leading-tight">A Barra</h1>
                 <h2 class="text-3xl md:text-6xl font-black uppercase text-[var(--cor-principal)]">está à venda?</h2>
                 <p class="mt-6 max-w-2xl text-lg md:text-xl font-light">Uma análise visual sobre a transformação de um dos bairros mais icônicos de Salvador.</p>
+                <p class="mt-8 text-xs text-gray-400">Fonte da Imagem: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
             </div>
         </div>
     </header>
@@ -381,7 +375,6 @@
                 <div class="relative wrap overflow-hidden p-4 md:p-10 h-full">
                     <div class="timeline-line"></div>
                     
-                    <!-- Item 1 -->
                     <div class="mb-8 flex justify-start md:justify-between items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -390,11 +383,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A Ladeira da Barra recebe seus primeiros sinais de urbanização, com pavimentação, calçadas e lampiões. A paisagem ainda é predominantemente rural.</p>
                             <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1870.jpg" alt="Paisagem da Barra em 1870" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Item 2 -->
                     <div class="mb-8 flex justify-start md:justify-between md:flex-row-reverse items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -403,11 +396,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">O bairro se consolida como área urbanizada. Bondes e rede elétrica chegam, e as casas passam a ter jardins e recuos, refletindo um novo modo de vida.</p>
                              <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1920.jpg" alt="Paisagem da Barra em 1920" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-left md:text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Item 3 -->
                     <div class="mb-8 flex justify-start md:justify-between items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -416,11 +409,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A chegada da arquitetura moderna. O Edifício Oceania inaugura a verticalização, mudando para sempre a paisagem horizontal da orla.</p>
                              <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1950.png" alt="Paisagem da Barra em 1950" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Item 4 -->
                     <div class="mb-8 flex justify-start md:justify-between md:flex-row-reverse items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -440,6 +433,7 @@
                     <div class="flex justify-center">
                         <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_PREDIOS.png" alt="Evolução do gabarito da Barra" class="clickable-image rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-opacity w-full">
                     </div>
+                    <p class="text-xs text-gray-600 mt-2 text-center">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                 </div>
             </div>
         </section>
@@ -457,7 +451,6 @@
             </div>
         </div>
 
-        <!-- PDF Modal -->
         <div id="pdf-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
             <div class="relative bg-gray-200 p-4 rounded-lg shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
                 <button id="close-pdf-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold hover:bg-gray-600 z-20">&times;</button>
@@ -481,7 +474,7 @@
                         <button onclick="toggleUsoSolo2011Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition-colors">Uso do solo (2011)</button>
                         <button onclick="toggleUsoSolo2024Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-rose-600 text-white font-semibold rounded-lg shadow-md hover:bg-rose-700 transition-colors">Uso do solo (2024)</button>
                         <button onclick="toggleVerdesLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors">Áreas Verdes (2019)</button>
-                        <button onclick="toggleProjetosFmlfLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition-colors">Área revitalizadas (2021)</button>
+                        <button onclick="toggleProjetosFmlfLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition-colors">Área requalificadas (2021)</button>
                     </div>
                 </div>
             </div>
@@ -509,10 +502,15 @@
 
         <section id="opiniao" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in-element">Deixe sua Opinião</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in-element">Mural de Opiniões</h2>
                 <div class="max-w-2xl mx-auto">
-                    <div class="mb-12 p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg fade-in-element">
-                        <h3 class="text-2xl font-bold mb-4">Escreva seu comentário</h3>
+
+                    <h3 class="text-2xl font-bold mb-6 fade-in-element">Comentários</h3>
+                    <div id="comments-list" class="space-y-6">
+                        </div>
+
+                    <div class="mt-12 p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg fade-in-element">
+                        <h3 class="text-2xl font-bold mb-4">Deixe sua Opinião</h3>
                         <form id="comment-form">
                             <div class="mb-4">
                                 <label for="nome" class="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
@@ -538,11 +536,6 @@
                                 </button>
                             </div>
                         </form>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-6 fade-in-element">Comentários</h3>
-                    <div id="comments-list" class="space-y-6">
-                        <!-- Comentários carregados pelo Firebase -->
                     </div>
                 </div>
             </div>
@@ -1077,7 +1070,7 @@
                             fillOpacity: 0.4
                         }),
                         onEachFeature: (feature, layer) => {
-                            layer.bindPopup("Área revitalizadas (2021)");
+                            layer.bindPopup("Área requalificadas (2021)");
                         }
                     });
                     projetosFmlfLayer.addTo(map);
