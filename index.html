@@ -26,8 +26,6 @@
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
       
         // Your web app's Firebase configuration
-        // ATENÇÃO: É uma boa prática não expor a chave da API diretamente no código do lado do cliente.
-        // Considere usar variáveis de ambiente ou um backend para mais segurança.
         const firebaseConfig = {
           apiKey: "AIzaSyBTXc-j0XmjB-KsZCxUCXNBz7j3N5cNxoE",
           authDomain: "barra-em-transformacao-site.firebaseapp.com",
@@ -100,55 +98,64 @@
         };
 
         // Event listener para o envio do formulário
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        if (commentForm) {
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            const nome = commentForm.nome.value;
-            const tipo_usuario = commentForm.tipo_usuario.value;
-            const comentario = commentForm.comentario.value;
-            const submitButton = commentForm.querySelector('button[type="submit"]');
+                const nome = commentForm.nome.value;
+                const tipo_usuario = commentForm.tipo_usuario.value;
+                const comentario = commentForm.comentario.value;
+                const submitButton = commentForm.querySelector('button[type="submit"]');
 
-            submitButton.disabled = true;
-            submitButton.innerText = 'Enviando...';
+                submitButton.disabled = true;
+                submitButton.innerText = 'Enviando...';
 
-            try {
-                await addDoc(collection(db, "comentarios"), {
-                    nome: nome,
-                    tipo_usuario: tipo_usuario,
-                    comentario: comentario,
-                    createdAt: Timestamp.now()
-                });
-                commentForm.reset();
-            } catch (error) {
-                console.error("Erro ao adicionar comentário: ", error);
-                alert("Ocorreu um erro ao enviar seu comentário. Tente novamente.");
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerText = 'Enviar Comentário';
-            }
-        });
+                try {
+                    await addDoc(collection(db, "comentarios"), {
+                        nome: nome,
+                        tipo_usuario: tipo_usuario,
+                        comentario: comentario,
+                        createdAt: Timestamp.now()
+                    });
+                    commentForm.reset();
+                } catch (error) {
+                    console.error("Erro ao adicionar comentário: ", error);
+                    alert("Ocorreu um erro ao enviar seu comentário. Tente novamente.");
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.innerText = 'Enviar Comentário';
+                }
+            });
+        }
 
         // Event listener para os botões de apagar (usando delegação de eventos)
-        commentsList.addEventListener('click', (e) => {
-            if (e.target && e.target.classList.contains('delete-comment-btn')) {
-                const id = e.target.dataset.id;
-                const password = prompt("Para apagar, digite a senha de administrador:");
-                
-                if (password === "farol") {
-                    if(confirm("Tem certeza que deseja apagar este comentário? Esta ação não pode ser desfeita.")) {
-                        deleteComment(id);
+        if (commentsList) {
+            commentsList.addEventListener('click', (e) => {
+                if (e.target && e.target.classList.contains('delete-comment-btn')) {
+                    const id = e.target.dataset.id;
+                    const password = prompt("Para apagar, digite a senha de administrador:");
+                    
+                    if (password === "farol") {
+                        if(confirm("Tem certeza que deseja apagar este comentário? Esta ação não pode ser desfeita.")) {
+                            deleteComment(id);
+                        }
+                    } else if (password !== null) {
+                        alert("Senha incorreta.");
                     }
-                } else if (password !== null) {
-                    alert("Senha incorreta.");
                 }
-            }
-        });
+            });
+        }
 
         // Carrega os comentários quando a página é carregada
-        loadComments();
+        if (commentsList) {
+            loadComments();
+        }
 
     </script>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -291,9 +298,33 @@
 </head>
 <body class="antialiased">
 
+    <!-- INÍCIO DO MENU DE NAVEGAÇÃO -->
+    <nav class="sticky top-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md text-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="text-xl font-bold hover:text-[var(--cor-principal)] transition-colors">Barra em Transformação</a>
+                
+                <!-- Links para Desktop -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#realidade" class="hover:text-[var(--cor-principal)] transition-colors">Realidade</a>
+                    <a href="#historia" class="hover:text-[var(--cor-principal)] transition-colors">História</a>
+                    <a href="#mapa" class="hover:text-[var(--cor-principal)] transition-colors">Mapa</a>
+                    <a href="#vozes" class="hover:text-[var(--cor-principal)] transition-colors">Vozes</a>
+                    <a href="#" id="open-pdf-btn" class="font-bold bg-[var(--cor-destaque)] px-4 py-2 rounded-md hover:bg-sky-800 transition-colors">Caderno Técnico</a>
+                </div>
+
+                <!-- Botão para Menu Mobile (opcional, se quiser adicionar depois) -->
+                <div class="md:hidden">
+                    <!--  Pode adicionar um botão de menu aqui no futuro -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- FIM DO MENU DE NAVEGAÇÃO -->
+
     <header class="hero-image-container text-white">
-        <img id="hero-bg-1" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_01_DSC06328.png" class="hero-image" alt="Casarão antigo na Barra">
-        <img id="hero-bg-2" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG" class="hero-image opacity-0" alt="Prédio moderno e espelhado">
+        <img id="hero-bg-1" src="https://xxncsxx.github.io/barraparaquem.com.br/Fotos_visita_deriva/Site_Capa_01_DSC06328.png" class="hero-image" alt="Casarão antigo na Barra">
+        <img id="hero-bg-2" src="https://xxncsxx.github.io/barraparaquem.com.br/Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG" class="hero-image opacity-0" alt="Prédio moderno e espelhado">
         
         <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
             <div class="fade-in-element">
@@ -306,7 +337,7 @@
 
     <main class="overflow-x-hidden">
         
-        <section class="py-16 md:py-20 bg-white">
+        <section id="realidade" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-element">A Nova Realidade da Barra</h2>
                 <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12 md:mb-16 fade-in-element">Os números revelam uma mudança drástica, impulsionada pelo mercado imobiliário e pelo turismo.</p>
@@ -331,7 +362,7 @@
             </div>
         </section>
 
-        <section class="py-16 md:py-20 bg-[var(--cor-fundo)]">
+        <section id="historia" class="py-16 md:py-20 bg-[var(--cor-fundo)]">
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in-element">Uma Viagem no Tempo</h2>
                 
@@ -346,7 +377,7 @@
                             <h3 class="mb-3 font-bold text-gray-800 text-xl">1870</h3>
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A Ladeira da Barra recebe seus primeiros sinais de urbanização, com pavimentação, calçadas e lampiões. A paisagem ainda é predominantemente rural.</p>
                             <div class="mt-4">
-                                <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1870.jpg" alt="Paisagem da Barra em 1870" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <img src="https://xxncsxx.github.io/barraparaquem.com.br/IMG/EVO_1870.jpg" alt="Paisagem da Barra em 1870" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
                             </div>
                         </div>
                     </div>
@@ -359,7 +390,7 @@
                             <h3 class="mb-3 font-bold text-gray-800 text-xl">1920</h3>
                             <p class="text-sm leading-snug tracking-wide text-gray-600">O bairro se consolida como área urbanizada. Bondes e rede elétrica chegam, e as casas passam a ter jardins e recuos, refletindo um novo modo de vida.</p>
                              <div class="mt-4">
-                                <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1920.jpg" alt="Paisagem da Barra em 1920" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <img src="https://xxncsxx.github.io/barraparaquem.com.br/IMG/EVO_1920.jpg" alt="Paisagem da Barra em 1920" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
                             </div>
                         </div>
                     </div>
@@ -372,7 +403,7 @@
                             <h3 class="mb-3 font-bold text-gray-800 text-xl">1950</h3>
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A chegada da arquitetura moderna. O Edifício Oceania inaugura a verticalização, mudando para sempre a paisagem horizontal da orla.</p>
                              <div class="mt-4">
-                                <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1950.png" alt="Paisagem da Barra em 1950" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <img src="https://xxncsxx.github.io/barraparaquem.com.br/IMG/EVO_1950.png" alt="Paisagem da Barra em 1950" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
                             </div>
                         </div>
                     </div>
@@ -395,7 +426,7 @@
                 <p class="max-w-3xl mx-auto text-center text-lg text-gray-700 my-8 fade-in-element">A drástica alteração no gabarito da Barra ilustrada na imagem, documenta a veloz substituição da paisagem de casarões por uma muralha de novos e altos empreendimentos.</p>
                 <div class="fade-in-element max-w-4xl mx-auto">
                     <div class="flex justify-center">
-                        <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_PREDIOS.png" alt="Evolução do gabarito da Barra" class="clickable-image rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-opacity w-full">
+                        <img src="https://xxncsxx.github.io/barraparaquem.com.br/IMG/EVO_PREDIOS.png" alt="Evolução do gabarito da Barra" class="clickable-image rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-opacity w-full">
                     </div>
                 </div>
             </div>
@@ -414,7 +445,15 @@
             </div>
         </div>
 
-        <section class="py-16 md:py-20 bg-white">
+        <!-- PDF Modal -->
+        <div id="pdf-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+            <div class="relative bg-gray-200 p-4 rounded-lg shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
+                <button id="close-pdf-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold hover:bg-gray-600 z-20">&times;</button>
+                <iframe id="pdf-viewer" src="" class="w-full h-full border-none" title="Caderno Técnico"></iframe>
+            </div>
+        </div>
+
+        <section id="mapa" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in-element">O Mapa da Transformação</h2>
                 <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12 fade-in-element">Explore as camadas de mudança que redesenham o bairro.</p>
@@ -436,7 +475,7 @@
             </div>
         </section>
         
-         <section class="py-16 md:py-20 bg-slate-800 text-white">
+         <section id="vozes" class="py-16 md:py-20 bg-slate-800 text-white">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-12 fade-in-element">Vozes da Barra</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -456,7 +495,7 @@
             </div>
         </section>
 
-        <section class="py-16 md:py-20 bg-white">
+        <section id="opiniao" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in-element">Deixe sua Opinião</h2>
                 <div class="max-w-2xl mx-auto">
@@ -579,46 +618,46 @@
         // LÓGICA DO MAPA INTERATIVO COM LEAFLET E GEOJSON
         // ==================================================================
         
-        const vegetacaoJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Mapa_Veg.geojson';
-        const vegetacaoJardJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Vegetacao_jard.geojson';
-		const poligonalBairroUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Poligonal_Bairro_Barra.geojson';
-        const airDnaUrl = 'https://barraparaquem.github.io/Vende-se/Outros/AirDNA.geojson';
-        const projetosFmlfUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Area_Projetos_FMLF.geojson';
+        const vegetacaoJsonUrl = 'https://xxncsxx.github.io/barraparaquem.com.br/Mapa_Veg.geojson';
+        const vegetacaoJardJsonUrl = 'https://xxncsxx.github.io/barraparaquem.com.br/Vegetacao_jard.geojson';
+		const poligonalBairroUrl = 'https://xxncsxx.github.io/barraparaquem.com.br/Poligonal_Bairro_Barra.geojson';
+        const airDnaUrl = 'https://xxncsxx.github.io/barraparaquem.com.br/AirDNA.geojson';
+        const projetosFmlfUrl = 'https://xxncsxx.github.io/barraparaquem.com.br/Area_Projetos_FMLF.geojson';
 
         const gabaritosLayersData = [
-            { name: 'Faixa de areia', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/areia_2016.geojson', style: { color: '#e5be8b', fillColor: '#e5be8b', fillOpacity: 0.6, weight: 1 } },
-            { name: '6 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/6_2016.geojson', style: { color: '#e17979', fillColor: '#e17979', fillOpacity: 0.8, weight: 1 } },
-            { name: '12 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/12_2016.geojson', style: { color: '#d9a149', fillColor: '#d9a149', fillOpacity: 0.8, weight: 1 } },
-            { name: '18 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/18_2016.geojson', style: { color: '#b05c76', fillColor: '#b05c76', fillOpacity: 0.8, weight: 1 } },
-            { name: '36 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/36_2016.geojson', style: { color: '#9c3354', fillColor: '#9c3354', fillOpacity: 0.8, weight: 1 } },
-            { name: '45 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/45_2016.geojson', style: { color: '#c4c85d', fillColor: '#c4c85d', fillOpacity: 0.8, weight: 1 } },
-            { name: '60 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/60_2016.geojson', style: { color: '#9b1114', fillColor: '#9b1114', fillOpacity: 0.8, weight: 1 } },
-            { name: '75 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/75_2016.geojson', style: { color: '#a47158', fillColor: '#a47158', fillOpacity: 0.8, weight: 1 } }
+            { name: 'Faixa de areia', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/areia_2016.geojson', style: { color: '#e5be8b', fillColor: '#e5be8b', fillOpacity: 0.6, weight: 1 } },
+            { name: '6 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/6_2016.geojson', style: { color: '#e17979', fillColor: '#e17979', fillOpacity: 0.8, weight: 1 } },
+            { name: '12 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/12_2016.geojson', style: { color: '#d9a149', fillColor: '#d9a149', fillOpacity: 0.8, weight: 1 } },
+            { name: '18 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/18_2016.geojson', style: { color: '#b05c76', fillColor: '#b05c76', fillOpacity: 0.8, weight: 1 } },
+            { name: '36 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/36_2016.geojson', style: { color: '#9c3354', fillColor: '#9c3354', fillOpacity: 0.8, weight: 1 } },
+            { name: '45 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/45_2016.geojson', style: { color: '#c4c85d', fillColor: '#c4c85d', fillOpacity: 0.8, weight: 1 } },
+            { name: '60 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/60_2016.geojson', style: { color: '#9b1114', fillColor: '#9b1114', fillOpacity: 0.8, weight: 1 } },
+            { name: '75 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2016/75_2016.geojson', style: { color: '#a47158', fillColor: '#a47158', fillOpacity: 0.8, weight: 1 } }
         ];
 
         const gabaritos2008LayersData = [
-            { name: '12 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_12m.geojson', style: { color: '#ffff00', fillColor: '#ffff00', fillOpacity: 0.8, weight: 1 } },
-            { name: '15 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_15m.geojson', style: { color: '#ff7040', fillColor: '#ff7040', fillOpacity: 0.8, weight: 1 } },
-            { name: '18 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_18m.geojson', style: { color: '#ffd040', fillColor: '#ffd040', fillOpacity: 0.8, weight: 1 } },
-            { name: '24 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_24m.geojson', style: { color: '#ffb8a0', fillColor: '#ffb8a0', fillOpacity: 0.8, weight: 1 } },
-            { name: '36 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_36m.geojson', style: { color: '#ff80c0', fillColor: '#ff80c0', fillOpacity: 0.8, weight: 1 } },
-            { name: '45 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_45m.geojson', style: { color: '#a0a0ff', fillColor: '#a0a0ff', fillOpacity: 0.8, weight: 1 } },
-            { name: '6 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_6m.geojson', style: { color: '#a0ffa0', fillColor: '#a0ffa0', fillOpacity: 0.8, weight: 1 } },
-            { name: 'Praias', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_praias.geojson', style: { color: '#b0ffff', fillColor: '#b0ffff', fillOpacity: 0.8, weight: 1 } },
-            { name: 'Preservação', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_preservacao.geojson', style: { color: '#009090', fillColor: '#009090', fillOpacity: 0.8, weight: 1 } }
+            { name: '12 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_12m.geojson', style: { color: '#ffff00', fillColor: '#ffff00', fillOpacity: 0.8, weight: 1 } },
+            { name: '15 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_15m.geojson', style: { color: '#ff7040', fillColor: '#ff7040', fillOpacity: 0.8, weight: 1 } },
+            { name: '18 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_18m.geojson', style: { color: '#ffd040', fillColor: '#ffd040', fillOpacity: 0.8, weight: 1 } },
+            { name: '24 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_24m.geojson', style: { color: '#ffb8a0', fillColor: '#ffb8a0', fillOpacity: 0.8, weight: 1 } },
+            { name: '36 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_36m.geojson', style: { color: '#ff80c0', fillColor: '#ff80c0', fillOpacity: 0.8, weight: 1 } },
+            { name: '45 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_45m.geojson', style: { color: '#a0a0ff', fillColor: '#a0a0ff', fillOpacity: 0.8, weight: 1 } },
+            { name: '6 metros', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_6m.geojson', style: { color: '#a0ffa0', fillColor: '#a0ffa0', fillOpacity: 0.8, weight: 1 } },
+            { name: 'Praias', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_praias.geojson', style: { color: '#b0ffff', fillColor: '#b0ffff', fillOpacity: 0.8, weight: 1 } },
+            { name: 'Preservação', url: 'https://xxncsxx.github.io/barraparaquem.com.br/GAB_2008/faixa_preservacao.geojson', style: { color: '#009090', fillColor: '#009090', fillOpacity: 0.8, weight: 1 } }
         ];
         
         const usoSoloData = [
-            { name: 'Residencial', style: { color: '#fcce23', fillColor: '#fcce23', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/RESIDENCIAL_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/RESIDENCIAL_2024.geojson' },
-            { name: 'Não Identificado/Abandonado', style: { color: '#fca732', fillColor: '#fca732', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/NAO_IDENTIFICADO_ABANDONADO_OU_SEM_USO_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/NAO_IDENTIFICADO_ABANDONADO_SEM_USO_2024.geojson' },
-            { name: 'Misto (Residencial/Comércio)', style: { color: '#f48153', fillColor: '#f48153', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2024.geojson' },
-            { name: 'Misto (Hospedagem/Comércio)', style: { color: '#e06462', fillColor: '#e06462', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2024.geojson' },
-            { name: 'Institucional', style: { color: '#cb4778', fillColor: '#cb4778', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/INSTITUCIONAL_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/INSTITUCIONAL_2024.geojson' },
-            { name: 'Hospedagem', style: { color: '#af2b8c', fillColor: '#af2b8c', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/HOSPEDAGEM_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/HOSPEDAGEM_2024.geojson' },
-            { name: 'Estacionamento', style: { color: '#910ca5', fillColor: '#910ca5', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/ESTACIONAMENTO_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/ESTACIONAMENTO_2024.geojson' },
-            { name: 'Em Obras', style: { color: '#6a01a4', fillColor: '#6a01a4', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/EM_OBRAS_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/EM_OBRAS_2024.geojson' },
-            { name: 'Comércio e/ou Serviço', style: { color: '#40059b', fillColor: '#40059b', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/COMERCIO_EOU_SERVICO_2024.geojson' },
-            { name: 'Saúde', style: { color: '#c026d3', fillColor: '#c026d3', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2011/SAUDE_2011.geojson', url_2024: 'https://barraparaquem.github.io/Vende-se/MAPA_USO_2024/SAUDE_2024.geojson' }
+            { name: 'Residencial', style: { color: '#fcce23', fillColor: '#fcce23', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/RESIDENCIAL_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/RESIDENCIAL_2024.geojson' },
+            { name: 'Não Identificado/Abandonado', style: { color: '#fca732', fillColor: '#fca732', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/NAO_IDENTIFICADO_ABANDONADO_OU_SEM_USO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/NAO_IDENTIFICADO_ABANDONADO_SEM_USO_2024.geojson' },
+            { name: 'Misto (Residencial/Comércio)', style: { color: '#f48153', fillColor: '#f48153', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2024.geojson' },
+            { name: 'Misto (Hospedagem/Comércio)', style: { color: '#e06462', fillColor: '#e06462', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2024.geojson' },
+            { name: 'Institucional', style: { color: '#cb4778', fillColor: '#cb4778', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/INSTITUCIONAL_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/INSTITUCIONAL_2024.geojson' },
+            { name: 'Hospedagem', style: { color: '#af2b8c', fillColor: '#af2b8c', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/HOSPEDAGEM_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/HOSPEDAGEM_2024.geojson' },
+            { name: 'Estacionamento', style: { color: '#910ca5', fillColor: '#910ca5', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/ESTACIONAMENTO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/ESTACIONAMENTO_2024.geojson' },
+            { name: 'Em Obras', style: { color: '#6a01a4', fillColor: '#6a01a4', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/EM_OBRAS_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/EM_OBRAS_2024.geojson' },
+            { name: 'Comércio e/ou Serviço', style: { color: '#40059b', fillColor: '#40059b', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/COMERCIO_EOU_SERVICO_2024.geojson' },
+            { name: 'Saúde', style: { color: '#c026d3', fillColor: '#c026d3', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/SAUDE_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/SAUDE_2024.geojson' }
         ];
 
         let map;
@@ -702,9 +741,9 @@
                     prediosLayer = L.layerGroup();
 
                     const novosEmpreendimentosData = [
-                        { name: 'Em Projeto', url: 'https://barraparaquem.github.io/Vende-se/Outros/EDF_Projeto.geojson', style: { color: '#fba486', fillColor: '#fba486', fillOpacity: 1, weight: 1 } },
-                        { name: 'Finalizados', url: 'https://barraparaquem.github.io/Vende-se/Outros/EDF_finalizados.geojson', style: { color: '#67010d', fillColor: '#67010d', fillOpacity: 1, weight: 1 } },
-                        { name: 'Em Obras', url: 'https://barraparaquem.github.io/Vende-se/Outros/EDF_Em_Obras.geojson', style: { color: '#eb3729', fillColor: '#eb3729', fillOpacity: 1, weight: 1 } }
+                        { name: 'Em Projeto', url: 'https://xxncsxx.github.io/barraparaquem.com.br/EDF_Projeto.geojson', style: { color: '#fba486', fillColor: '#fba486', fillOpacity: 1, weight: 1 } },
+                        { name: 'Finalizados', url: 'https://xxncsxx.github.io/barraparaquem.com.br/EDF_finalizados.geojson', style: { color: '#67010d', fillColor: '#67010d', fillOpacity: 1, weight: 1 } },
+                        { name: 'Em Obras', url: 'https://xxncsxx.github.io/barraparaquem.com.br/EDF_Em_Obras.geojson', style: { color: '#eb3729', fillColor: '#eb3729', fillOpacity: 1, weight: 1 } }
                     ];
 
                     const onEachFeaturePopup = (feature, layer) => {
@@ -1121,6 +1160,34 @@
             const walkY = (y - startY);
             modalImageWrapper.scrollLeft = scrollLeft - walkX;
             modalImageWrapper.scrollTop = scrollTop - walkY;
+        });
+
+        // --- Lógica do Modal do PDF ---
+        const pdfModal = document.getElementById('pdf-modal');
+        const openPdfBtn = document.getElementById('open-pdf-btn');
+        const closePdfBtn = document.getElementById('close-pdf-modal');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfUrl = 'https://barraparaquem.github.io/Vende-se/PDF.pdf';
+
+        openPdfBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            pdfViewer.src = pdfUrl;
+            pdfModal.classList.remove('hidden');
+            pdfModal.classList.add('flex');
+        });
+
+        const closePdfModalFunction = () => {
+            pdfModal.classList.add('hidden');
+            pdfModal.classList.remove('flex');
+            pdfViewer.src = ''; // Limpa o src para parar o carregamento
+        };
+
+        closePdfBtn.addEventListener('click', closePdfModalFunction);
+
+        pdfModal.addEventListener('click', (e) => {
+            if (e.target === pdfModal) {
+                closePdfModalFunction();
+            }
         });
 
     </script>
