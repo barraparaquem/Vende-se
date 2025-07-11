@@ -663,7 +663,7 @@
             { name: 'Residencial', style: { color: '#fcce23', fillColor: '#fcce23', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/RESIDENCIAL_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/RESIDENCIAL_2024.geojson' },
             { name: 'Não Identificado/Abandonado', style: { color: '#fca732', fillColor: '#fca732', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/NAO_IDENTIFICADO_ABANDONADO_OU_SEM_USO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/NAO_IDENTIFICADO_ABANDONADO_SEM_USO_2024.geojson' },
             { name: 'Misto (Residencial/Comércio)', style: { color: '#f48153', fillColor: '#f48153', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/MISTO_RESIDENCIAL_COMERCIO_EOU_SERVICO_2024.geojson' },
-            { name: 'Misto (Hospedagem/Comércio)', style: { color: '#e06462', fillColor: '#e06462', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2024.geojson' },
+            { name: 'Misto (Hospedagem/Comércio)', style: { color: '#e06462', fillColor: '#e06462', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/MISTO_Hospedagem_COMERCIO_EOU_SERVICO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/MISTO_HOSPEDAGEM_COMERCIO_EOU_SERVICO_2024.geojson' },
             { name: 'Institucional', style: { color: '#cb4778', fillColor: '#cb4778', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/INSTITUCIONAL_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/INSTITUCIONAL_2024.geojson' },
             { name: 'Hospedagem', style: { color: '#af2b8c', fillColor: '#af2b8c', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/HOSPEDAGEM_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/HOSPEDAGEM_2024.geojson' },
             { name: 'Estacionamento', style: { color: '#910ca5', fillColor: '#910ca5', fillOpacity: 0.8, weight: 1 }, url_2011: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2011/ESTACIONAMENTO_2011.geojson', url_2024: 'https://xxncsxx.github.io/barraparaquem.com.br/MAPA_USO_2024/ESTACIONAMENTO_2024.geojson' },
@@ -1186,7 +1186,9 @@
 
         const openPdfModalFunction = (e) => {
             e.preventDefault();
-            pdfViewer.src = pdfUrl;
+            // Utiliza o Google Docs Viewer para garantir compatibilidade em todos os dispositivos
+            const googleDocsViewerUrl = `https://docs.google.com/gview?url=${pdfUrl}&embedded=true`;
+            pdfViewer.src = googleDocsViewerUrl;
             pdfModal.classList.remove('hidden');
             pdfModal.classList.add('flex');
             mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
