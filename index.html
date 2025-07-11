@@ -313,11 +313,23 @@
                     <a href="#" id="open-pdf-btn" class="font-bold bg-[var(--cor-destaque)] px-4 py-2 rounded-md hover:bg-sky-800 transition-colors">Caderno Técnico</a>
                 </div>
 
-                <!-- Botão para Menu Mobile (opcional, se quiser adicionar depois) -->
-                <div class="md:hidden">
-                    <!--  Pode adicionar um botão de menu aqui no futuro -->
+                <!-- Botão para Menu Mobile -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
+        </div>
+        <!-- Painel do Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#realidade" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Realidade</a>
+            <a href="#historia" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">História</a>
+            <a href="#mapa" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Mapa</a>
+            <a href="#vozes" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Vozes</a>
+            <a href="#" id="open-pdf-btn-mobile" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Caderno Técnico</a>
         </div>
     </nav>
     <!-- FIM DO MENU DE NAVEGAÇÃO -->
@@ -1165,16 +1177,24 @@
         // --- Lógica do Modal do PDF ---
         const pdfModal = document.getElementById('pdf-modal');
         const openPdfBtn = document.getElementById('open-pdf-btn');
+        const openPdfBtnMobile = document.getElementById('open-pdf-btn-mobile');
         const closePdfBtn = document.getElementById('close-pdf-modal');
         const pdfViewer = document.getElementById('pdf-viewer');
         const pdfUrl = 'https://barraparaquem.github.io/Vende-se/PDF.pdf';
+        
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        openPdfBtn.addEventListener('click', (e) => {
+        const openPdfModalFunction = (e) => {
             e.preventDefault();
             pdfViewer.src = pdfUrl;
             pdfModal.classList.remove('hidden');
             pdfModal.classList.add('flex');
-        });
+            mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
+        };
+
+        openPdfBtn.addEventListener('click', openPdfModalFunction);
+        openPdfBtnMobile.addEventListener('click', openPdfModalFunction);
+
 
         const closePdfModalFunction = () => {
             pdfModal.classList.add('hidden');
@@ -1188,6 +1208,20 @@
             if (e.target === pdfModal) {
                 closePdfModalFunction();
             }
+        });
+
+        // --- Lógica do Menu Responsivo ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fecha o menu mobile quando um link de âncora é clicado
+        document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                mobileMenu.classList.add('hidden');
+            });
         });
 
     </script>
