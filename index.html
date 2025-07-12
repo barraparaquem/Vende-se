@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
-    <!-- Scripts do Firebase -->
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -26,8 +25,6 @@
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
       
         // Your web app's Firebase configuration
-        // ATENÇÃO: É uma boa prática não expor a chave da API diretamente no código do lado do cliente.
-        // Considere usar variáveis de ambiente ou um backend para mais segurança.
         const firebaseConfig = {
           apiKey: "AIzaSyBTXc-j0XmjB-KsZCxUCXNBz7j3N5cNxoE",
           authDomain: "barra-em-transformacao-site.firebaseapp.com",
@@ -100,55 +97,64 @@
         };
 
         // Event listener para o envio do formulário
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        if (commentForm) {
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            const nome = commentForm.nome.value;
-            const tipo_usuario = commentForm.tipo_usuario.value;
-            const comentario = commentForm.comentario.value;
-            const submitButton = commentForm.querySelector('button[type="submit"]');
+                const nome = commentForm.nome.value;
+                const tipo_usuario = commentForm.tipo_usuario.value;
+                const comentario = commentForm.comentario.value;
+                const submitButton = commentForm.querySelector('button[type="submit"]');
 
-            submitButton.disabled = true;
-            submitButton.innerText = 'Enviando...';
+                submitButton.disabled = true;
+                submitButton.innerText = 'Enviando...';
 
-            try {
-                await addDoc(collection(db, "comentarios"), {
-                    nome: nome,
-                    tipo_usuario: tipo_usuario,
-                    comentario: comentario,
-                    createdAt: Timestamp.now()
-                });
-                commentForm.reset();
-            } catch (error) {
-                console.error("Erro ao adicionar comentário: ", error);
-                alert("Ocorreu um erro ao enviar seu comentário. Tente novamente.");
-            } finally {
-                submitButton.disabled = false;
-                submitButton.innerText = 'Enviar Comentário';
-            }
-        });
+                try {
+                    await addDoc(collection(db, "comentarios"), {
+                        nome: nome,
+                        tipo_usuario: tipo_usuario,
+                        comentario: comentario,
+                        createdAt: Timestamp.now()
+                    });
+                    commentForm.reset();
+                } catch (error) {
+                    console.error("Erro ao adicionar comentário: ", error);
+                    alert("Ocorreu um erro ao enviar seu comentário. Tente novamente.");
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.innerText = 'Enviar Comentário';
+                }
+            });
+        }
 
         // Event listener para os botões de apagar (usando delegação de eventos)
-        commentsList.addEventListener('click', (e) => {
-            if (e.target && e.target.classList.contains('delete-comment-btn')) {
-                const id = e.target.dataset.id;
-                const password = prompt("Para apagar, digite a senha de administrador:");
-                
-                if (password === "farol") {
-                    if(confirm("Tem certeza que deseja apagar este comentário? Esta ação não pode ser desfeita.")) {
-                        deleteComment(id);
+        if (commentsList) {
+            commentsList.addEventListener('click', (e) => {
+                if (e.target && e.target.classList.contains('delete-comment-btn')) {
+                    const id = e.target.dataset.id;
+                    const password = prompt("Para apagar, digite a senha de administrador:");
+                    
+                    if (password === "farol") {
+                        if(confirm("Tem certeza que deseja apagar este comentário? Esta ação não pode ser desfeita.")) {
+                            deleteComment(id);
+                        }
+                    } else if (password !== null) {
+                        alert("Senha incorreta.");
                     }
-                } else if (password !== null) {
-                    alert("Senha incorreta.");
                 }
-            }
-        });
+            });
+        }
 
         // Carrega os comentários quando a página é carregada
-        loadComments();
+        if (commentsList) {
+            loadComments();
+        }
 
     </script>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -291,6 +297,38 @@
 </head>
 <body class="antialiased">
 
+    <nav class="sticky top-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md text-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="text-xl font-bold hover:text-[var(--cor-principal)] transition-colors">Barra em Transformação</a>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#realidade" class="hover:text-[var(--cor-principal)] transition-colors">Realidade</a>
+                    <a href="#historia" class="hover:text-[var(--cor-principal)] transition-colors">História</a>
+                    <a href="#mapa" class="hover:text-[var(--cor-principal)] transition-colors">Mapa</a>
+                    <a href="#vozes" class="hover:text-[var(--cor-principal)] transition-colors">Vozes</a>
+                    <a href="#" id="open-about-btn" class="hover:text-[var(--cor-principal)] transition-colors">Sobre nós</a>
+                    <a href="#" id="open-pdf-btn" class="font-bold bg-[var(--cor-destaque)] px-4 py-2 rounded-md hover:bg-sky-800 transition-colors">Caderno Técnico</a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#realidade" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Realidade</a>
+            <a href="#historia" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">História</a>
+            <a href="#mapa" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Mapa</a>
+            <a href="#vozes" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Vozes</a>
+            <a href="#" id="open-about-btn-mobile" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Sobre nós</a>
+            <a href="#" id="open-pdf-btn-mobile" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Caderno Técnico</a>
+        </div>
+    </nav>
     <header class="hero-image-container text-white">
         <img id="hero-bg-1" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_01_DSC06328.png" class="hero-image" alt="Casarão antigo na Barra">
         <img id="hero-bg-2" src="https://barraparaquem.github.io/Vende-se/Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG" class="hero-image opacity-0" alt="Prédio moderno e espelhado">
@@ -300,13 +338,14 @@
                 <h1 class="text-4xl md:text-7xl font-black uppercase tracking-wider leading-tight">A Barra</h1>
                 <h2 class="text-3xl md:text-6xl font-black uppercase text-[var(--cor-principal)]">está à venda?</h2>
                 <p class="mt-6 max-w-2xl text-lg md:text-xl font-light">Uma análise visual sobre a transformação de um dos bairros mais icônicos de Salvador.</p>
+                <p class="mt-8 text-xs text-gray-400">Fonte da Imagem: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
             </div>
         </div>
     </header>
 
     <main class="overflow-x-hidden">
         
-        <section class="py-16 md:py-20 bg-white">
+        <section id="realidade" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-in-element">A Nova Realidade da Barra</h2>
                 <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12 md:mb-16 fade-in-element">Os números revelam uma mudança drástica, impulsionada pelo mercado imobiliário e pelo turismo.</p>
@@ -331,14 +370,13 @@
             </div>
         </section>
 
-        <section class="py-16 md:py-20 bg-[var(--cor-fundo)]">
+        <section id="historia" class="py-16 md:py-20 bg-[var(--cor-fundo)]">
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 fade-in-element">Uma Viagem no Tempo</h2>
                 
                 <div class="relative wrap overflow-hidden p-4 md:p-10 h-full">
                     <div class="timeline-line"></div>
                     
-                    <!-- Item 1 -->
                     <div class="mb-8 flex justify-start md:justify-between items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -347,11 +385,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A Ladeira da Barra recebe seus primeiros sinais de urbanização, com pavimentação, calçadas e lampiões. A paisagem ainda é predominantemente rural.</p>
                             <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1870.jpg" alt="Paisagem da Barra em 1870" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Item 2 -->
                     <div class="mb-8 flex justify-start md:justify-between md:flex-row-reverse items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -360,11 +398,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">O bairro se consolida como área urbanizada. Bondes e rede elétrica chegam, e as casas passam a ter jardins e recuos, refletindo um novo modo de vida.</p>
                              <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1920.jpg" alt="Paisagem da Barra em 1920" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-left md:text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Item 3 -->
                     <div class="mb-8 flex justify-start md:justify-between items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -373,11 +411,11 @@
                             <p class="text-sm leading-snug tracking-wide text-gray-600">A chegada da arquitetura moderna. O Edifício Oceania inaugura a verticalização, mudando para sempre a paisagem horizontal da orla.</p>
                              <div class="mt-4">
                                 <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_1950.png" alt="Paisagem da Barra em 1950" class="clickable-image rounded-lg shadow-md cursor-pointer w-full hover:opacity-80 transition-opacity">
+                                <p class="text-xs text-gray-500 mt-1 text-right">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Item 4 -->
                     <div class="mb-8 flex justify-start md:justify-between md:flex-row-reverse items-start w-full timeline-item">
                         <div class="hidden md:block w-5/12"></div>
                         <div class="timeline-item-dot"></div>
@@ -397,9 +435,22 @@
                     <div class="flex justify-center">
                         <img src="https://barraparaquem.github.io/Vende-se/IMG/EVO_PREDIOS.png" alt="Evolução do gabarito da Barra" class="clickable-image rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-opacity w-full">
                     </div>
+                    <p class="text-xs text-gray-600 mt-2 text-center">Fonte: Acervo da pesquisa "Percepções da Barra" (FAUFBA)</p>
                 </div>
             </div>
         </section>
+
+        <div id="about-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+            <div class="relative bg-white p-8 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col text-gray-800">
+                <button id="close-about-modal" class="absolute top-2 right-2 text-gray-800 hover:text-red-500 text-3xl font-bold z-20">&times;</button>
+                <h2 class="text-2xl font-bold mb-4">Sobre Nós</h2>
+                <div class="overflow-y-auto pr-4">
+                    <p class="text-lg leading-relaxed">
+                        Este estudo surge de uma investigação coletiva na região da Barra em Salvador (BA), com o intuito de examinar os efeitos urbanos da recente expansão imobiliária focada principalmente nos apartamentos estúdio. Esses empreendimentos compactos e verticalizados têm sido planejados para serem alugados por temporadas desde o princípio e vêm substituindo construções antigas enquanto promovem o turismo de massa na região. Esse processo causa alterações na arquitetura e na paisagem local, pressiona a infraestrutura urbana existente, pode enfraquecer os laços comunitários e prejudica tanto o patrimônio quanto a identidade cultural do bairro. Tais edificações não apenas introduzem um novo estilo de vida urbano; eles também demandam uma abordagem urbanística equitativa que concilia a busca pela modernidade com a preservação do patrimônio e a garantia da igualdade espacial e do direito à cidade.
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
             <div class="relative bg-white p-4 rounded-lg shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
@@ -414,7 +465,14 @@
             </div>
         </div>
 
-        <section class="py-16 md:py-20 bg-white">
+        <div id="pdf-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+            <div class="relative bg-gray-200 p-4 rounded-lg shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
+                <button id="close-pdf-modal" class="absolute top-2 right-2 text-white bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center text-2xl font-bold hover:bg-gray-600 z-20">&times;</button>
+                <iframe id="pdf-viewer" src="" class="w-full h-full border-none" title="Caderno Técnico"></iframe>
+            </div>
+        </div>
+
+        <section id="mapa" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 fade-in-element">O Mapa da Transformação</h2>
                 <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12 fade-in-element">Explore as camadas de mudança que redesenham o bairro.</p>
@@ -430,13 +488,13 @@
                         <button onclick="toggleUsoSolo2011Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition-colors">Uso do solo (2011)</button>
                         <button onclick="toggleUsoSolo2024Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-rose-600 text-white font-semibold rounded-lg shadow-md hover:bg-rose-700 transition-colors">Uso do solo (2024)</button>
                         <button onclick="toggleVerdesLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors">Áreas Verdes (2019)</button>
-                        <button onclick="toggleProjetosFmlfLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition-colors">Área revitalizadas (2021)</button>
+                        <button onclick="toggleProjetosFmlfLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-orange-500 text-white font-semibold rounded-lg shadow-md hover:bg-orange-600 transition-colors">Área requalificadas (2021)</button>
                     </div>
                 </div>
             </div>
         </section>
         
-         <section class="py-16 md:py-20 bg-slate-800 text-white">
+         <section id="vozes" class="py-16 md:py-20 bg-slate-800 text-white">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold mb-12 fade-in-element">Vozes da Barra</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -456,12 +514,17 @@
             </div>
         </section>
 
-        <section class="py-16 md:py-20 bg-white">
+        <section id="opiniao" class="py-16 md:py-20 bg-white">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in-element">Deixe sua Opinião</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 fade-in-element">Mural de Opiniões</h2>
                 <div class="max-w-2xl mx-auto">
-                    <div class="mb-12 p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg fade-in-element">
-                        <h3 class="text-2xl font-bold mb-4">Escreva seu comentário</h3>
+
+                    <h3 class="text-2xl font-bold mb-6 fade-in-element">Comentários</h3>
+                    <div id="comments-list" class="space-y-6">
+                        </div>
+
+                    <div class="mt-12 p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg fade-in-element">
+                        <h3 class="text-2xl font-bold mb-4">Deixe sua Opinião</h3>
                         <form id="comment-form">
                             <div class="mb-4">
                                 <label for="nome" class="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
@@ -487,11 +550,6 @@
                                 </button>
                             </div>
                         </form>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-6 fade-in-element">Comentários</h3>
-                    <div id="comments-list" class="space-y-6">
-                        <!-- Comentários carregados pelo Firebase -->
                     </div>
                 </div>
             </div>
@@ -520,7 +578,7 @@
     <footer class="bg-gray-900 text-white py-8">
         <div class="container mx-auto px-6 text-center">
             <p class="mb-2">&copy; 2025 Barra em Transformação.</p>
-            <p class="text-sm text-gray-400">Este site é uma interpretação visual e interativa baseada no estudo "Percepções da Barra", realizado por estudantes da Faculdade de Arquitetura da Universidade Federal da Bahia.</p>
+            <p class="text-sm text-gray-400">Este site é uma interpretação visual e interativa baseada no estudo "Percepções da Barra", realizado no âmbito da disciplina "Ateliê de Planejamento Urbano e Regional" da Faculdade de Arquitetura da Universidade Federal da Bahia (FAUFBA). Equipe: Carolina Smith, Kaline de Castro, Nilton Santos, Maria Eduarda Passos, Paula Mussi, Pedro Gomes e Yasmin Moraes.</p>
         </div>
     </footer>
 
@@ -1026,7 +1084,7 @@
                             fillOpacity: 0.4
                         }),
                         onEachFeature: (feature, layer) => {
-                            layer.bindPopup("Área revitalizadas (2021)");
+                            layer.bindPopup("Área requalificadas (2021)");
                         }
                     });
                     projetosFmlfLayer.addTo(map);
@@ -1121,6 +1179,87 @@
             const walkY = (y - startY);
             modalImageWrapper.scrollLeft = scrollLeft - walkX;
             modalImageWrapper.scrollTop = scrollTop - walkY;
+        });
+
+        // --- Lógica do Modal do PDF ---
+        const pdfModal = document.getElementById('pdf-modal');
+        const openPdfBtn = document.getElementById('open-pdf-btn');
+        const openPdfBtnMobile = document.getElementById('open-pdf-btn-mobile');
+        const closePdfBtn = document.getElementById('close-pdf-modal');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfUrl = 'https://barraparaquem.github.io/Vende-se/PDF.pdf';
+        
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const openPdfModalFunction = (e) => {
+            e.preventDefault();
+            // Utiliza o Google Docs Viewer para garantir compatibilidade em todos os dispositivos
+            const googleDocsViewerUrl = `https://docs.google.com/gview?url=${pdfUrl}&embedded=true`;
+            pdfViewer.src = googleDocsViewerUrl;
+            pdfModal.classList.remove('hidden');
+            pdfModal.classList.add('flex');
+            mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
+        };
+
+        openPdfBtn.addEventListener('click', openPdfModalFunction);
+        openPdfBtnMobile.addEventListener('click', openPdfModalFunction);
+
+
+        const closePdfModalFunction = () => {
+            pdfModal.classList.add('hidden');
+            pdfModal.classList.remove('flex');
+            pdfViewer.src = ''; // Limpa o src para parar o carregamento
+        };
+
+        closePdfBtn.addEventListener('click', closePdfModalFunction);
+
+        pdfModal.addEventListener('click', (e) => {
+            if (e.target === pdfModal) {
+                closePdfModalFunction();
+            }
+        });
+        
+        // --- Lógica do Modal "Sobre Nós" ---
+        const aboutModal = document.getElementById('about-modal');
+        const openAboutBtn = document.getElementById('open-about-btn');
+        const openAboutBtnMobile = document.getElementById('open-about-btn-mobile');
+        const closeAboutBtn = document.getElementById('close-about-modal');
+
+        const openAboutModalFunction = (e) => {
+            e.preventDefault();
+            aboutModal.classList.remove('hidden');
+            aboutModal.classList.add('flex');
+            mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
+        };
+
+        const closeAboutModalFunction = () => {
+            aboutModal.classList.add('hidden');
+            aboutModal.classList.remove('flex');
+        };
+
+        openAboutBtn.addEventListener('click', openAboutModalFunction);
+        openAboutBtnMobile.addEventListener('click', openAboutModalFunction);
+        closeAboutBtn.addEventListener('click', closeAboutModalFunction);
+
+        aboutModal.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                closeAboutModalFunction();
+            }
+        });
+
+
+        // --- Lógica do Menu Responsivo ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fecha o menu mobile quando um link de âncora é clicado
+        document.querySelectorAll('#mobile-menu a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                mobileMenu.classList.add('hidden');
+            });
         });
 
     </script>
