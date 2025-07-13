@@ -179,15 +179,6 @@
             position: relative;
             height: 100vh;
         }
-        .hero-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 1s ease-in-out;
-        }
         .leaflet-container {
             border-radius: 0.375rem;
             background-color: #e2e8f0;
@@ -329,10 +320,15 @@
             <a href="#" id="open-pdf-btn-mobile" class="block px-6 py-3 text-sm hover:bg-gray-700 transition-colors">Caderno Técnico</a>
         </div>
     </nav>
+    
+    <!-- HEADER MODIFICADO -->
     <header class="hero-image-container text-white">
-        <img id="hero-bg-1" src="./Fotos_visita_deriva/Site_Capa_01_DSC06328.png" class="hero-image" alt="Casarão antigo na Barra">
-        <img id="hero-bg-2" src="./Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG" class="hero-image opacity-0" alt="Prédio moderno e espelhado">
+        <!-- Div para a primeira imagem de fundo -->
+        <div id="hero-bg-1" class="absolute inset-0 bg-cover bg-center bg-fixed transition-opacity duration-1000 ease-in-out" style="background-image: url('./Fotos_visita_deriva/Site_Capa_01_DSC06328.png');"></div>
+        <!-- Div para a segunda imagem de fundo -->
+        <div id="hero-bg-2" class="absolute inset-0 bg-cover bg-center bg-fixed transition-opacity duration-1000 ease-in-out opacity-0" style="background-image: url('./Fotos_visita_deriva/Site_Capa_02_DSC06323.JPG');"></div>
         
+        <!-- Conteúdo sobreposto -->
         <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center p-4">
             <div class="fade-in-element">
                 <h1 class="text-4xl md:text-7xl font-black uppercase tracking-wider leading-tight">A Barra</h1>
