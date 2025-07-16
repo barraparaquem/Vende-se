@@ -300,18 +300,7 @@
 </head>
 <body class="antialiased">
 
-    <!-- Pop-up de Informativo -->
-    <div id="info-popup" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[999]">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md text-center text-gray-800">
-            <h2 class="text-2xl font-bold mb-4">Informativo</h2>
-            <p class="text-lg leading-relaxed mb-6">
-                Este site é uma interpretação visual e interativa baseada no estudo "Percepções da Barra", realizado no âmbito da disciplina "Ateliê de Planejamento Urbano e Regional" da Faculdade de Arquitetura da Universidade Federal da Bahia (FAUFBA).
-            </p>
-            <button id="close-info-popup" class="bg-[var(--cor-destaque)] hover:bg-sky-800 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline">
-                OK
-            </button>
-        </div>
-    </div>
+    <!-- Pop-up de Informativo REMOVIDO -->
 
     <nav class="sticky top-0 z-50 bg-gray-900 bg-opacity-80 backdrop-blur-md text-white shadow-lg">
         <div class="container mx-auto px-6">
@@ -722,15 +711,13 @@
         let prediosLegend = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica do Pop-up de Informativo
-            const infoPopup = document.getElementById('info-popup');
-            const closeInfoPopupBtn = document.getElementById('close-info-popup');
-
-            // O pop-up já está visível por padrão no HTML, agora só adicionamos o listener para fechá-lo
-            closeInfoPopupBtn.addEventListener('click', () => {
-                infoPopup.classList.add('hidden');
-                infoPopup.classList.remove('flex');
-            });
+            // Lógica do Pop-up de Informativo - REMOVIDA
+            // const infoPopup = document.getElementById('info-popup');
+            // const closeInfoPopupBtn = document.getElementById('close-info-popup');
+            // closeInfoPopupBtn.addEventListener('click', () => {
+            //     infoPopup.classList.add('hidden');
+            //     infoPopup.classList.remove('flex');
+            // });
 
             const bounds = L.latLngBounds(
                 L.latLng(-13.02, -38.54),
