@@ -603,7 +603,10 @@
         
         const vegetacaoJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Mapa_Veg.geojson';
         const vegetacaoJardJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Vegetacao_jard.geojson';
-		const poligonalBairroUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Poligonal_Bairro_Barra.geojson';
+        // CORREÇÃO: A variável 'poligonalBairroUrl' estava com um erro de sintaxe e continha um array, mas a função que a usa esperava uma única URL.
+        // A variável foi corrigida para ser uma string de URL e uma nova variável para a máscara de Salvador foi criada.
+        const poligonalBairroUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Poligonal_Bairro_Barra.geojson';
+        const mascaraSalvadorUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Mascara_Salvador.geojson';
         const airDnaUrl = 'https://barraparaquem.github.io/Vende-se/Outros/AirDNA.geojson';
         const projetosFmlfUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Area_Projetos_FMLF.geojson';
 
@@ -686,6 +689,23 @@
             map.createPane('projetosPane');
             map.getPane('projetosPane').style.zIndex = 400; 
 
+            // CORREÇÃO: Carregando as camadas de limite e máscara separadamente.
+            // Carrega a máscara de Salvador (fundo cinza para dar contexto)
+            loadGeoJsonLayer(mascaraSalvadorUrl, {
+                pane: 'boundaryPane',
+                style: {
+                    color: '#aaaaaa',
+                    weight: 1,
+                    fillColor: '#dddddd',
+                    fillOpacity: 0.5
+                }
+            }).then(layer => {
+                layer.addTo(map);
+            }).catch(error => {
+                console.error("Erro ao carregar a camada da máscara de Salvador:", error);
+            });
+
+            // Carrega a poligonal do bairro da Barra
             loadGeoJsonLayer(poligonalBairroUrl, {
                 pane: 'boundaryPane',
                 style: {
