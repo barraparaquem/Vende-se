@@ -40,9 +40,15 @@
         const db = getFirestore(app);
         const analytics = getAnalytics(app);
 
-        // Lógica dos Comentários
+        // --- Lógica dos Comentários ---
         const commentForm = document.getElementById('comment-form');
         const commentsList = document.getElementById('comments-list');
+        const passwordModal = document.getElementById('password-modal');
+        const passwordForm = document.getElementById('password-form');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        const passwordError = document.getElementById('password-error');
+
+        let commentToDeleteId = null;
 
         // Função para apagar um comentário
         const deleteComment = async (id) => {
@@ -51,8 +57,6 @@
                 await deleteDoc(commentDocRef);
             } catch (error) {
                 console.error("Erro ao apagar comentário: ", error);
-                // Substituído alert por console.error para evitar bloqueio da UI
-                console.error("Ocorreu um erro ao apagar o comentário.");
             }
         };
         
@@ -98,7 +102,7 @@
             });
         };
 
-        // Event listener para o envio do formulário
+        // Event listener para o envio do formulário de comentário
         if (commentForm) {
             commentForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -121,8 +125,6 @@
                     commentForm.reset();
                 } catch (error) {
                     console.error("Erro ao adicionar comentário: ", error);
-                    // Substituído alert por console.error para evitar bloqueio da UI
-                    console.error("Ocorreu um erro ao enviar seu comentário. Tente novamente.");
                 } finally {
                     submitButton.disabled = false;
                     submitButton.innerText = 'Enviar Comentário';
@@ -130,26 +132,41 @@
             });
         }
 
-        // Event listener para os botões de apagar (usando delegação de eventos)
+        // Abre o modal de senha ao clicar em apagar
         if (commentsList) {
             commentsList.addEventListener('click', (e) => {
                 if (e.target && e.target.classList.contains('delete-comment-btn')) {
-                    const id = e.target.dataset.id;
-                    // Substituído prompt por uma modal customizada para evitar bloqueio da UI
-                    // Para este exemplo, apenas um console.log para simular a senha
-                    const password = "farol"; // Simulação de senha para teste
-                    
-                    if (password === "farol") {
-                        // Substituído confirm por console.log para evitar bloqueio da UI
-                        console.log("Tem certeza que deseja apagar este comentário? Esta ação não pode ser desfeita.");
-                        deleteComment(id);
-                    } else if (password !== null) {
-                        // Substituído alert por console.error para evitar bloqueio da UI
-                        console.error("Senha incorreta.");
-                    }
+                    commentToDeleteId = e.target.dataset.id;
+                    passwordModal.classList.remove('hidden');
+                    passwordError.classList.add('hidden');
+                    passwordForm.password.value = '';
                 }
             });
         }
+
+        // Fecha o modal de senha
+        const closePasswordModal = () => {
+            passwordModal.classList.add('hidden');
+            commentToDeleteId = null;
+        }
+
+        cancelDeleteBtn.addEventListener('click', closePasswordModal);
+
+        // Lida com o envio do formulário de senha
+        passwordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = passwordForm.password.value;
+            const correctPassword = "farol"; // Sua senha
+
+            if (password === correctPassword) {
+                if (commentToDeleteId) {
+                    deleteComment(commentToDeleteId);
+                }
+                closePasswordModal();
+            } else {
+                passwordError.classList.remove('hidden');
+            }
+        });
 
         // Carrega os comentários quando a página é carregada
         if (commentsList) {
@@ -158,144 +175,37 @@
 
     </script>
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         :root {
             --cor-principal: #f59e0b;
             --cor-texto: #1e293b;
             --cor-fundo: #f8fafc;
             --cor-destaque: #0369a1;
         }
-        .fade-in-element {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-element.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .hero-image-container {
-            position: relative;
-            height: 100vh;
-        }
-        .leaflet-container {
-            border-radius: 0.375rem;
-            background-color: #e2e8f0;
-        }
-        .leaflet-popup-content-wrapper {
-            border-radius: 0.375rem;
-        }
-         .counter {
-            transition: all 1.5s ease-out;
-        }
-        
-        /* Estilização da linha do tempo responsiva */
-        .timeline-line {
-            position: absolute;
-            left: 1.5rem; /* Posição para mobile */
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: #e5e7eb;
-        }
-
-        .timeline-item-dot {
-            position: absolute;
-            left: 1.5rem; /* Alinha com a linha */
-            top: 1rem;
-            transform: translateX(-50%);
-            width: 1.5rem;
-            height: 1.5rem;
-            background-color: var(--cor-principal);
-            border-radius: 9999px;
-            border: 4px solid var(--cor-fundo);
-            z-index: 10;
-        }
-
-        /* Estilos da linha do tempo para telas maiores (desktop) */
+        .fade-in-element { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-element.visible { opacity: 1; transform: translateY(0); }
+        .hero-image-container { position: relative; height: 100vh; }
+        .leaflet-container { border-radius: 0.375rem; background-color: #e2e8f0; }
+        .leaflet-popup-content-wrapper { border-radius: 0.375rem; }
+        .counter { transition: all 1.5s ease-out; }
+        .timeline-line { position: absolute; left: 1.5rem; top: 0; bottom: 0; width: 4px; background-color: #e5e7eb; }
+        .timeline-item-dot { position: absolute; left: 1.5rem; top: 1rem; transform: translateX(-50%); width: 1.5rem; height: 1.5rem; background-color: var(--cor-principal); border-radius: 9999px; border: 4px solid var(--cor-fundo); z-index: 10; }
         @media (min-width: 768px) {
-            .timeline-line {
-                left: 50%; /* Centraliza a linha */
-                transform: translateX(-50%);
-            }
-            .timeline-item-dot {
-                left: 50%; /* Centraliza o ponto */
-            }
-            .timeline-content-container {
-                width: 50%;
-                padding-left: 3rem; /* Espaçamento da linha central */
-                padding-right: 0;
-            }
-            .timeline-item.md\:flex-row-reverse .timeline-content-container {
-                text-align: right;
-                padding-left: 0;
-                padding-right: 3rem; /* Espaçamento da linha central */
-            }
+            .timeline-line { left: 50%; transform: translateX(-50%); }
+            .timeline-item-dot { left: 50%; }
+            .timeline-content-container { width: 50%; padding-left: 3rem; padding-right: 0; }
+            .timeline-item.md\:flex-row-reverse .timeline-content-container { text-align: right; padding-left: 0; padding-right: 3rem; }
         }
-
-        .custom-cluster-icon {
-            background-color: #4183c4;
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #2a72b2;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .info.legend {
-            background-color: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            line-height: 1.5;
-        }
-        .info.legend h4 {
-            margin: 0 0 5px;
-            font-weight: bold;
-        }
-        .info.legend i {
-            width: 18px;
-            height: 18px;
-            float: left;
-            margin-right: 8px;
-            opacity: 1;
-        }
-        
-        #modal-image-wrapper {
-            cursor: default;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #modal-image-wrapper.pannable {
-            cursor: grab;
-        }
-        #modal-image-wrapper.pannable:active {
-            cursor: grabbing;
-        }
-        #modal-image {
-            max-width: 100%;
-            max-height: 100%;
-            transition: transform 0.3s ease-in-out;
-            transform-origin: center center;
-        }
-        
-        /* CSS para o Comparador de Imagens */
-        #comparison-slider {
-            user-select: none;
-            -webkit-user-select: none;
-        }
+        .custom-cluster-icon { background-color: #4183c4; color: white; border-radius: 50%; text-align: center; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid #2a72b2; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .info.legend { background-color: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); line-height: 1.5; }
+        .info.legend h4 { margin: 0 0 5px; font-weight: bold; }
+        .info.legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 1; }
+        #modal-image-wrapper { cursor: default; display: flex; justify-content: center; align-items: center; }
+        #modal-image-wrapper.pannable { cursor: grab; }
+        #modal-image-wrapper.pannable:active { cursor: grabbing; }
+        #modal-image { max-width: 100%; max-height: 100%; transition: transform 0.3s ease-in-out; transform-origin: center center; }
+        #comparison-slider { user-select: none; -webkit-user-select: none; }
     </style>
 </head>
 <body class="antialiased">
@@ -538,7 +448,8 @@
 
                     <h3 class="text-2xl font-bold mb-6 fade-in-element">Comentários</h3>
                     <div id="comments-list" class="space-y-6">
-                        </div>
+                        <!-- Comentários serão carregados aqui -->
+                    </div>
 
                     <div class="mt-12 p-6 md:p-8 bg-gray-50 rounded-lg shadow-lg fade-in-element">
                         <h3 class="text-2xl font-bold mb-4">Deixe sua Opinião</h3>
@@ -571,6 +482,29 @@
                 </div>
             </div>
         </section>
+
+        <!-- Modal de Senha -->
+        <div id="password-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+            <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
+                <h3 class="text-xl font-bold mb-4">Requer Senha</h3>
+                <p class="text-gray-600 mb-6">Para apagar este comentário, por favor, insira a senha de administrador.</p>
+                <form id="password-form">
+                    <div class="mb-4">
+                        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
+                        <input type="password" id="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <p id="password-error" class="text-red-500 text-xs italic mt-2 hidden">Senha incorreta. Tente novamente.</p>
+                    </div>
+                    <div class="flex items-center justify-end gap-4">
+                        <button id="cancel-delete" type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Cancelar
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                            Apagar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <section class="py-16 md:py-20 bg-gray-100">
             <div class="container mx-auto px-6 text-left">
@@ -711,14 +645,6 @@
         let prediosLegend = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Lógica do Pop-up de Informativo - REMOVIDA
-            // const infoPopup = document.getElementById('info-popup');
-            // const closeInfoPopupBtn = document.getElementById('close-info-popup');
-            // closeInfoPopupBtn.addEventListener('click', () => {
-            //     infoPopup.classList.add('hidden');
-            //     infoPopup.classList.remove('flex');
-            // });
-
             const bounds = L.latLngBounds(
                 L.latLng(-13.02, -38.54),
                 L.latLng(-12.99, -38.50)
@@ -769,13 +695,11 @@
                 const imageAfter = imageAfterWrapper.querySelector('img');
                 let isDragging = false;
                 
-                // Garante que a imagem "depois" tenha a mesma largura do contêiner principal para evitar o escalonamento
                 function setAfterImageWidth() {
                     const containerWidth = sliderContainer.offsetWidth;
                     imageAfter.style.width = `${containerWidth}px`;
                 }
 
-                // Define a largura inicial e ajusta em caso de redimensionamento da janela
                 setAfterImageWidth();
                 window.addEventListener('resize', setAfterImageWidth);
 
@@ -1264,12 +1188,11 @@
 
         const openPdfModalFunction = (e) => {
             e.preventDefault();
-            // Utiliza o Google Docs Viewer para garantir compatibilidade em todos os dispositivos
             const googleDocsViewerUrl = `https://docs.google.com/gview?url=${pdfUrl}&embedded=true`;
             pdfViewer.src = googleDocsViewerUrl;
             pdfModal.classList.remove('hidden');
             pdfModal.classList.add('flex');
-            mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
+            mobileMenu.classList.add('hidden');
         };
 
         openPdfBtn.addEventListener('click', openPdfModalFunction);
@@ -1279,7 +1202,7 @@
         const closePdfModalFunction = () => {
             pdfModal.classList.add('hidden');
             pdfModal.classList.remove('flex');
-            pdfViewer.src = ''; // Limpa o src para parar o carregamento
+            pdfViewer.src = '';
         };
 
         closePdfBtn.addEventListener('click', closePdfModalFunction);
@@ -1300,7 +1223,7 @@
             e.preventDefault();
             aboutModal.classList.remove('hidden');
             aboutModal.classList.add('flex');
-            mobileMenu.classList.add('hidden'); // Fecha o menu mobile se estiver aberto
+            mobileMenu.classList.add('hidden');
         };
 
         const closeAboutModalFunction = () => {
