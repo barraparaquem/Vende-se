@@ -607,12 +607,12 @@
         const airDnaUrl = 'https://barraparaquem.github.io/Vende-se/Outros/AirDNA.geojson';
         const projetosFmlfUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Area_Projetos_FMLF.geojson';
 
+        // MODIFICADO: A faixa de 18m foi removida da legenda e seu arquivo foi agrupado com a de 36m.
         const gabaritosLayersData = [
             { name: 'Faixa de areia', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/areia_2016.geojson', style: { color: '#e5caa7', fillColor: '#e5caa7', fillOpacity: 0.6, weight: 1 } },
             { name: '6 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/6_2016.geojson', style: { color: '#f4c2c2', fillColor: '#f4c2c2', fillOpacity: 0.8, weight: 1 } },
             { name: '12 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/12_2016.geojson', style: { color: '#e17d7e', fillColor: '#e17d7e', fillOpacity: 0.8, weight: 1 } },
-            { name: '18 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/18_2016.geojson', style: { color: '#cc5051', fillColor: '#cc5051', fillOpacity: 0.8, weight: 1 } },
-            { name: '36 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/36_2016.geojson', style: { color: '#cc5051', fillColor: '#cc5051', fillOpacity: 0.8, weight: 1 } },
+            { name: '36 metros', url: ['https://barraparaquem.github.io/Vende-se/GAB_2016/18_2016.geojson', 'https://barraparaquem.github.io/Vende-se/GAB_2016/36_2016.geojson'], style: { color: '#cc5051', fillColor: '#cc5051', fillOpacity: 0.8, weight: 1 } },
             { name: '45 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/45_2016.geojson', style: { color: '#a22022', fillColor: '#a22022', fillOpacity: 0.8, weight: 1 } },
             { name: '60 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/60_2016.geojson', style: { color: '#87191b', fillColor: '#87191b', fillOpacity: 0.8, weight: 1 } },
             { name: '75 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/75_2016.geojson', style: { color: '#4d0e0f', fillColor: '#4d0e0f', fillOpacity: 0.8, weight: 1 } }
@@ -900,6 +900,7 @@
             }
         }
 
+        // MODIFICADO: A função agora lida com um array de URLs para uma única camada.
         async function toggleGabaritosLayer() {
             if (gabaritosLayerGroup && map.hasLayer(gabaritosLayerGroup)) {
                 map.removeLayer(gabaritosLayerGroup);
@@ -912,12 +913,18 @@
                 try {
                     gabaritosLayerGroup = L.layerGroup(); 
                     
-                    const promises = gabaritosLayersData.map(data => 
-                        loadGeoJsonLayer(data.url, {
-                            pane: 'gabaritosPane',
-                            style: data.style
-                        })
-                    );
+                    const promises = [];
+                    gabaritosLayersData.forEach(data => {
+                        const urls = Array.isArray(data.url) ? data.url : [data.url];
+                        urls.forEach(url => {
+                            promises.push(
+                                loadGeoJsonLayer(url, {
+                                    pane: 'gabaritosPane',
+                                    style: data.style
+                                })
+                            );
+                        });
+                    });
 
                     const loadedLayers = await Promise.all(promises);
                     loadedLayers.forEach(layer => gabaritosLayerGroup.addLayer(layer));
