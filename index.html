@@ -423,6 +423,7 @@
                         <button onclick="toggleAirDnaLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition-colors">Levantamento dos AirBNBs</button>
                         <button onclick="toggleGabaritosLayer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition-colors">Gabaritos (PDDU 2016)</button>
                         <button onclick="toggleGabaritos2008Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors">Gabaritos (PDDU 2008)</button>
+                        <button onclick="toggleGabaritos2011Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 transition-colors">Gabaritos (2011)</button>
                         <button onclick="toggleGabaritos2024Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-colors">Gabaritos (2024)</button>
                         <button onclick="toggleUsoSolo2011Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-fuchsia-600 text-white font-semibold rounded-lg shadow-md hover:bg-fuchsia-700 transition-colors">Uso do solo (2011)</button>
                         <button onclick="toggleUsoSolo2024Layer()" class="px-4 py-2 text-sm md:px-6 md:py-2 md:text-base bg-rose-600 text-white font-semibold rounded-lg shadow-md hover:bg-rose-700 transition-colors">Uso do solo (2024)</button>
@@ -600,14 +601,11 @@
         
         const vegetacaoJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Mapa_Veg.geojson';
         const vegetacaoJardJsonUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Vegetacao_jard.geojson';
-        // CORREÇÃO: A variável 'poligonalBairroUrl' estava com um erro de sintaxe e continha um array, mas a função que a usa esperava uma única URL.
-        // A variável foi corrigida para ser uma string de URL e uma nova variável para a máscara de Salvador foi criada.
         const poligonalBairroUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Poligonal_Bairro_Barra.geojson';
         const mascaraSalvadorUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Mascara_Salvador.geojson';
         const airDnaUrl = 'https://barraparaquem.github.io/Vende-se/Outros/AirDNA.geojson';
         const projetosFmlfUrl = 'https://barraparaquem.github.io/Vende-se/Outros/Area_Projetos_FMLF.geojson';
 
-        // MODIFICADO: A faixa de 18m foi removida da legenda e seu arquivo foi agrupado com a de 36m.
         const gabaritosLayersData = [
             { name: 'Faixa de areia', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/areia_2016.geojson', style: { color: '#e5caa7', fillColor: '#e5caa7', fillOpacity: 0.6, weight: 1 } },
             { name: '6 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2016/6_2016.geojson', style: { color: '#f4c2c2', fillColor: '#f4c2c2', fillOpacity: 0.8, weight: 1 } },
@@ -628,6 +626,19 @@
             { name: '6 metros', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_6m.geojson', style: { color: '#a0ffa0', fillColor: '#a0ffa0', fillOpacity: 0.8, weight: 1 } },
             { name: 'Praias', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_praias.geojson', style: { color: '#b0ffff', fillColor: '#b0ffff', fillOpacity: 0.8, weight: 1 } },
             { name: 'Preservação', url: 'https://barraparaquem.github.io/Vende-se/GAB_2008/faixa_preservacao.geojson', style: { color: '#009090', fillColor: '#009090', fillOpacity: 0.8, weight: 1 } }
+        ];
+
+        const gabaritos2011LayersData = [
+            { name: '0 - 5m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_0-5m.geojson', style: { color: '#faebdd', fillColor: '#faebdd', fillOpacity: 0.8, weight: 1 } },
+            { name: '5 - 10m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_5-10m.geojson', style: { color: '#f7c4a4', fillColor: '#f7c4a4', fillOpacity: 0.8, weight: 1 } },
+            { name: '10 - 15m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_10-15m.geojson', style: { color: '#f69b71', fillColor: '#f69b71', fillOpacity: 0.8, weight: 1 } },
+            { name: '15 - 20m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_15-20m.geojson', style: { color: '#f26f4c', fillColor: '#f26f4c', fillOpacity: 0.8, weight: 1 } },
+            { name: '20 - 25m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_20-25m.geojson', style: { color: '#e73d3f', fillColor: '#e73d3f', fillOpacity: 0.8, weight: 1 } },
+            { name: '25 - 30m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_25-30m.geojson', style: { color: '#ca1a50', fillColor: '#ca1a50', fillOpacity: 0.8, weight: 1 } },
+            { name: '30 - 35m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_30-35m.geojson', style: { color: '#982f68', fillColor: '#982f68', fillOpacity: 0.8, weight: 1 } },
+            { name: '35 - 40m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_35-40m.geojson', style: { color: '#753771', fillColor: '#753771', fillOpacity: 0.8, weight: 1 } },
+            { name: '40 - 45m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_40-45m.geojson', style: { color: '#5c3071', fillColor: '#5c3071', fillOpacity: 0.8, weight: 1 } },
+            { name: '45 - 55m', url: 'https://barraparaquem.github.io/Vende-se/GAB_2011/gab_2011_45-55m.geojson', style: { color: '#391e5b', fillColor: '#391e5b', fillOpacity: 0.8, weight: 1 } }
         ];
         
         const gabaritos2024LayersData = [
@@ -664,6 +675,7 @@
         let verdesLayer = null;
         let gabaritosLayerGroup = null; 
         let gabaritos2008LayerGroup = null;
+        let gabaritos2011LayerGroup = null;
         let gabaritos2024LayerGroup = null;
         let airDnaLayer = null;
         let projetosFmlfLayer = null;
@@ -671,6 +683,7 @@
         let usoSolo2024LayerGroup = null;
         let gabaritosLegend = null;
         let gabaritos2008Legend = null;
+        let gabaritos2011Legend = null;
         let gabaritos2024Legend = null;
         let usoSoloLegend = null;
         let prediosLegend = null;
@@ -704,8 +717,6 @@
             map.createPane('projetosPane');
             map.getPane('projetosPane').style.zIndex = 400; 
 
-            // CORREÇÃO: Carregando as camadas de limite e máscara separadamente.
-            // Carrega a máscara de Salvador (fundo cinza para dar contexto)
             loadGeoJsonLayer(mascaraSalvadorUrl, {
                 pane: 'boundaryPane',
                 style: {
@@ -720,7 +731,6 @@
                 console.error("Erro ao carregar a camada da máscara de Salvador:", error);
             });
 
-            // Carrega a poligonal do bairro da Barra
             loadGeoJsonLayer(poligonalBairroUrl, {
                 pane: 'boundaryPane',
                 style: {
@@ -735,7 +745,6 @@
                 console.error("Erro ao carregar a camada da poligonal do bairro:", error);
             });
             
-            // Lógica para o Comparador de Imagens
             const sliderContainer = document.getElementById('comparison-slider');
             if (sliderContainer) {
                 const handle = document.getElementById('slider-handle');
@@ -900,7 +909,6 @@
             }
         }
 
-        // MODIFICADO: A função agora lida com um array de URLs para uma única camada.
         async function toggleGabaritosLayer() {
             if (gabaritosLayerGroup && map.hasLayer(gabaritosLayerGroup)) {
                 map.removeLayer(gabaritosLayerGroup);
@@ -991,6 +999,50 @@
                     }
                 } catch (error) {
                     console.error("Erro ao carregar as camadas de gabaritos 2008:", error);
+                }
+            }
+        }
+
+        async function toggleGabaritos2011Layer() {
+            if (gabaritos2011LayerGroup && map.hasLayer(gabaritos2011LayerGroup)) {
+                map.removeLayer(gabaritos2011LayerGroup);
+                gabaritos2011LayerGroup = null;
+                if (gabaritos2011Legend) {
+                    map.removeControl(gabaritos2011Legend);
+                    gabaritos2011Legend = null;
+                }
+            } else {
+                try {
+                    gabaritos2011LayerGroup = L.layerGroup(); 
+                    
+                    const promises = gabaritos2011LayersData.map(data => 
+                        loadGeoJsonLayer(data.url, {
+                            pane: 'gabaritosPane',
+                            style: data.style
+                        })
+                    );
+
+                    const loadedLayers = await Promise.all(promises);
+                    loadedLayers.forEach(layer => gabaritos2011LayerGroup.addLayer(layer));
+                    
+                    gabaritos2011LayerGroup.addTo(map);
+                    
+                    if (!gabaritos2011Legend) {
+                        gabaritos2011Legend = L.control({position: 'bottomright'});
+                        gabaritos2011Legend.onAdd = function (map) {
+                            const div = L.DomUtil.create('div', 'info legend');
+                            div.innerHTML += '<h4>Gabaritos (2011)</h4>';
+                            gabaritos2011LayersData.forEach(item => {
+                                div.innerHTML += 
+                                    '<i style="background:' + item.style.fillColor + '; opacity: 0.8;"></i> ' +
+                                    item.name + '<br>';
+                            });
+                            return div;
+                        };
+                        gabaritos2011Legend.addTo(map);
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar as camadas de gabaritos 2011:", error);
                 }
             }
         }
